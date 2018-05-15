@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 
 export default class App extends Component {
   state = {
-    placeName: ""
+    placeName: "",
+    places: []
   };
 
   placeNameChangedHandler = value => {
@@ -12,7 +13,23 @@ export default class App extends Component {
     });
   };
 
+  placeSubmitHandler = () => {
+    if (this.state.placeName.trim() === "") {
+      return;
+    }
+
+    this.setState(prevState => {
+      return {
+        places: [...prevState.places, prevState.placeName]
+      };
+    });
+  };
+
   render() {
+    const placesOutput = this.state.places.map((place, i) => {
+      return <Text key={i}>{place}</Text>;
+    });
+
     return (
       <View style={styles.container}>
         <View style={styles.inputContainer}>
@@ -22,8 +39,13 @@ export default class App extends Component {
             value={this.state.placeName}
             onChangeText={this.placeNameChangedHandler}
           />
-          <Button title="Add" style={styles.placeButton} />
+          <Button
+            title="Add"
+            style={styles.placeButton}
+            onPress={this.placeSubmitHandler}
+          />
         </View>
+        <View>{placesOutput}</View>
       </View>
     );
   }
