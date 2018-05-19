@@ -12,16 +12,19 @@ export default class App extends Component {
   placeAddedHandler = placeName => {
     this.setState(prevState => {
       return {
-        places: [...prevState.places, placeName]
+        places: [
+          ...prevState.places,
+          { key: Math.random().toString(), value: placeName }
+        ]
       };
     });
   };
 
-  placeDeletedHandler = index => {
+  placeDeletedHandler = key => {
     this.setState(prevState => {
       return {
-        places: prevState.places.filter((place, i) => {
-          return i !== index;
+        places: prevState.places.filter(place => {
+          return place.key !== key;
         })
       };
     });
