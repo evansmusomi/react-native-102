@@ -15,16 +15,13 @@ const reducer = (state = initialState, action) => {
     case ADD_PLACE:
       return {
         ...state,
-        places: [
-          state.places,
-          {
-            key: Math.random().toString(),
-            name: action.placeName,
-            image: {
-              uri: "https://i.ytimg.com/vi/rwT6WGTndKY/hqdefault.jpg"
-            }
+        places: state.places.concat({
+          key: Math.random().toString(),
+          name: action.placeName,
+          image: {
+            uri: "https://i.ytimg.com/vi/rwT6WGTndKY/hqdefault.jpg"
           }
-        ]
+        })
       };
 
     case DELETE_PLACE:
