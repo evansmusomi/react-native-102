@@ -11,10 +11,6 @@ import configureStore from "./src/store/configureStore";
 
 const store = configureStore();
 
-import configureStore from "./src/store/configureStore";
-
-const store = configureStore();
-
 // Register screens
 Navigation.registerComponent(
   "awesome-places.AuthScreen",
