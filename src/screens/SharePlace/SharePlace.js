@@ -18,6 +18,10 @@ import PickImage from "../../components/PickImage/PickImage";
 import PickLocation from "../../components/PickLocation/PickLocation";
 
 class SharePlaceScreen extends Component {
+  static navigatorStyle = {
+    navBarButtonColor: "orange"
+  };
+
   state = {
     placeName: ""
   };
@@ -94,4 +98,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(SharePlaceScreen);
+export default connect(
+  null,
+  mapDispatchToProps
+)(SharePlaceScreen);
