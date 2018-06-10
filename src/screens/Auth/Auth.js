@@ -13,6 +13,7 @@ import HeadingText from "../../components/UI/HeadingText/HeadingText";
 import MainText from "../../components/UI/MainText/MainText";
 import ButtonWithBackground from "../../components/UI/ButtonWithBackground/ButtonWithBackground";
 import backgroundImage from "../../assets/background.jpg";
+import validate from "../../utils/validation";
 
 class AuthScreen extends Component {
   state = {
@@ -52,13 +53,46 @@ class AuthScreen extends Component {
   }
 
   updateInputState = (key, value) => {
+    let connectedValue = {};
+    if (this.state.controls[key].validationRules.equalTo) {
+      const equalControl = this.state.controls[key].validationRules.equalTo;
+      const equalValue = this.state.controls[equalControl].value;
+
+      connectedValue = {
+        ...connectedValue,
+        equalTo: equalValue
+      };
+    }
+    if (key === "password") {
+      connectedValue = {
+        ...connectedValue,
+        equalTo: value
+      };
+    }
+
     this.setState(previousState => {
       return {
         controls: {
           ...previousState.controls,
+          confirmPassword: {
+            ...previousState.controls.confirmPassword,
+            valid:
+              key === "password"
+                ? validate(
+                    previousState.controls.confirmPassword.value,
+                    previousState.controls.confirmPassword.validationRules,
+                    connectedValue
+                  )
+                : previousState.controls.confirmPassword.valid
+          },
           [key]: {
             ...previousState.controls[key],
-            value: value
+            value: value,
+            valid: validate(
+              value,
+              previousState.controls[key].validationRules,
+              connectedValue
+            )
           }
         }
       };
