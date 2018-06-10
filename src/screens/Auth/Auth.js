@@ -24,21 +24,24 @@ class AuthScreen extends Component {
         valid: false,
         validationRules: {
           isEmail: true
-        }
+        },
+        touched: false
       },
       password: {
         value: "",
         valid: false,
         validationRules: {
           minLength: 6
-        }
+        },
+        touched: false
       },
       confirmPassword: {
         value: "",
         valid: false,
         validationRules: {
           equalTo: "password"
-        }
+        },
+        touched: false
       }
     }
   };
@@ -92,7 +95,8 @@ class AuthScreen extends Component {
               value,
               previousState.controls[key].validationRules,
               connectedValue
-            )
+            ),
+            touched: true
           }
         }
       };
@@ -135,6 +139,8 @@ class AuthScreen extends Component {
               placeholder="Email Address"
               value={this.state.controls.email.value}
               onChangeText={value => this.updateInputState("email", value)}
+              valid={this.state.controls.email.valid}
+              touched={this.state.controls.email.touched}
             />
             <View
               style={
@@ -156,6 +162,8 @@ class AuthScreen extends Component {
                   onChangeText={value =>
                     this.updateInputState("password", value)
                   }
+                  valid={this.state.controls.password.valid}
+                  touched={this.state.controls.password.touched}
                 />
               </View>
               <View
@@ -171,11 +179,21 @@ class AuthScreen extends Component {
                   onChangeText={value =>
                     this.updateInputState("confirmPassword", value)
                   }
+                  valid={this.state.controls.confirmPassword.valid}
+                  touched={this.state.controls.confirmPassword.touched}
                 />
               </View>
             </View>
           </View>
-          <ButtonWithBackground color="#29aaf4" onPress={this.loginHandler}>
+          <ButtonWithBackground
+            color="#29aaf4"
+            onPress={this.loginHandler}
+            disabled={
+              !this.state.controls.confirmPassword.valid ||
+              !this.state.controls.password.valid ||
+              !this.state.controls.email.valid
+            }
+          >
             Submit
           </ButtonWithBackground>
         </View>
