@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
-} from "react-native";
+import { Button, ScrollView, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 
 import { addPlace } from "../../store/actions/index";

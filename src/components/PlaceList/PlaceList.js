@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { FlatList, StyleSheet } from "react-native";
 
 import ListItem from "../ListItem/ListItem";
