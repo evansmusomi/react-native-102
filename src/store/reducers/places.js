@@ -14,7 +14,8 @@ const reducer = (state = initialState, action) => {
           name: action.placeName,
           image: {
             uri: "https://i.ytimg.com/vi/rwT6WGTndKY/hqdefault.jpg"
-          }
+          },
+          location: action.location
         })
       };
 

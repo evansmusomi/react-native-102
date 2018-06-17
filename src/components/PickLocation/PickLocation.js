@@ -33,6 +33,33 @@ class PickLocation extends Component {
         locationChosen: true
       };
     });
+    this.props.onLocationPick({
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude
+    });
+  };
+
+  getLocationHandler = () => {
+    requestLocationPermission();
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const coordsEvent = {
+          nativeEvent: {
+            coordinate: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }
+          }
+        };
+        this.pickLocationHandler(coordsEvent);
+      },
+      error => {
+        console.log(error);
+        alert("Fetching the Postion failed, please pick one manually!");
+      },
+      { enableHighAccuracy: false, timeout: 10000 }
+    );
   };
 
   getLocationHandler = () => {
