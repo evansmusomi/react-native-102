@@ -62,29 +62,6 @@ class PickLocation extends Component {
     );
   };
 
-  getLocationHandler = () => {
-    requestLocationPermission();
-
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const coordsEvent = {
-          nativeEvent: {
-            coordinate: {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            }
-          }
-        };
-        this.pickLocationHandler(coordsEvent);
-      },
-      error => {
-        console.log(error);
-        alert("Fetching the Postion failed, please pick one manually!");
-      },
-      { enableHighAccuracy: false, timeout: 10000 }
-    );
-  };
-
   render() {
     let marker = null;
 

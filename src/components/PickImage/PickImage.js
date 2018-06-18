@@ -1,16 +1,34 @@
 import React, { Component } from "react";
 import { Button, Image, StyleSheet, View } from "react-native";
-import imagePlaceholder from "../../assets/fourseasons-borabora.jpg";
+import ImagePicker from "react-native-image-picker";
 
 class PickImage extends Component {
+  state = {
+    pickedImage: null
+  };
+
+  pickImageHandler = () => {
+    ImagePicker.showImagePicker({ title: "Pick an Image" }, response => {
+      if (response.didCancel) {
+        console.log("User cancelled!");
+      } else if (response.error) {
+        console.log("Error", response.error);
+      } else {
+        this.setState({
+          pickedImage: { uri: response.uri }
+        });
+      }
+    });
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.placeholder}>
-          <Image source={imagePlaceholder} style={styles.previewImage} />
+          <Image source={this.state.pickedImage} style={styles.previewImage} />
         </View>
         <View style={styles.button}>
-          <Button title="Pick Image" onPress={() => alert("Pick Image")} />
+          <Button title="Pick Image" onPress={this.pickImageHandler} />
         </View>
       </View>
     );
