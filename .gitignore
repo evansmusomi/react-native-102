@@ -5,6 +5,7 @@
 
 # dependencies
 /node_modules
+/functions/node_modules
 
 # misc
 .env.local
@@ -33,3 +34,6 @@ buck-out/
 *.keystore
 
 .vscode/
+
+# key
+functions/awesome-places.json
