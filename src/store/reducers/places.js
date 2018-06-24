@@ -1,4 +1,8 @@
-import { SET_PLACES, REMOVE_PLACE } from "../actions/actionTypes";
+import {
+  SET_PLACES,
+  REMOVE_PLACE,
+  SET_NEW_PLACE
+} from "../actions/actionTypes";
 
 const initialState = {
   places: []
@@ -10,6 +14,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         places: action.places
+      };
+    case SET_NEW_PLACE:
+      return {
+        ...state,
+        places: [...state.places, action.place]
       };
     case REMOVE_PLACE:
       return {
