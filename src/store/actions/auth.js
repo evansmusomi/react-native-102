@@ -1,3 +1,4 @@
+import Config from "react-native-config";
 import { TRY_AUTH } from "./actionTypes";
 import { uiStartLoading, uiStopLoading } from "./index";
 import startMainTabs from "../../screens/MainTabs/startMainTabs";
@@ -15,7 +16,9 @@ export const authSignUp = authData => {
   return dispatch => {
     dispatch(uiStartLoading());
     fetch(
-      "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyASvVR4L25fpyeyAy1c48Op1aQfZ1Zab5s",
+      `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${
+        Config.FIREBASE_API_KEY
+      }`,
       {
         method: "POST",
         body: JSON.stringify({
