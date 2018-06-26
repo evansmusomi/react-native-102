@@ -8,6 +8,7 @@
 /functions/node_modules
 
 # misc
+.env
 .env.local
 .env.development.local
 .env.test.local
