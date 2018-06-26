@@ -5,32 +5,28 @@ import startMainTabs from "../../screens/MainTabs/startMainTabs";
 
 export const tryAuth = (authData, authMode) => {
   return dispatch => {
-    if (authMode === "login") {
-    } else {
-      dispatch(authSignUp(authData));
-    }
-  };
-};
-
-export const authSignUp = authData => {
-  return dispatch => {
     dispatch(uiStartLoading());
-    fetch(
-      `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${
+    let url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${
+      Config.FIREBASE_API_KEY
+    }`;
+
+    if (authMode === "signup") {
+      url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${
         Config.FIREBASE_API_KEY
-      }`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email: authData.email,
-          password: authData.password,
-          returnSecureToken: true
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
+      }`;
+    }
+
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: authData.email,
+        password: authData.password,
+        returnSecureToken: true
+      }),
+      headers: {
+        "Content-Type": "application/json"
       }
-    )
+    })
       .catch(error => {
         dispatch(uiStopLoading());
         console.log(error);
