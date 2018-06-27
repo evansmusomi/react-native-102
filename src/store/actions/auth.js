@@ -1,5 +1,5 @@
 import Config from "react-native-config";
-import { TRY_AUTH } from "./actionTypes";
+import { AUTH_SET_TOKEN } from "./actionTypes";
 import { uiStartLoading, uiStopLoading } from "./index";
 import startMainTabs from "../../screens/MainTabs/startMainTabs";
 
@@ -27,20 +27,42 @@ export const tryAuth = (authData, authMode) => {
         "Content-Type": "application/json"
       }
     })
+      .then(response => response.json())
+      .then(parsedResponse => {
+        dispatch(uiStopLoading());
+        if (!parsedResponse.idToken) {
+          alert("Authentication failed, please try again!");
+        } else {
+          dispatch(authSetToken(parsedResponse.idToken));
+          startMainTabs();
+        }
+        console.log(parsedResponse);
+      })
       .catch(error => {
         dispatch(uiStopLoading());
         console.log(error);
         alert("Authentication failed, please try again!");
-      })
-      .then(response => response.json())
-      .then(parsedResponse => {
-        dispatch(uiStopLoading());
-        if (parsedResponse.error) {
-          alert("Authentication failed, please try again!");
-        } else {
-          startMainTabs();
-        }
-        console.log(parsedResponse);
       });
+  };
+};
+
+export const authSetToken = token => {
+  return {
+    type: AUTH_SET_TOKEN,
+    token: token
+  };
+};
+
+export const authGetToken = () => {
+  return (dispatch, getState) => {
+    const promise = new Promise((resolve, reject) => {
+      const token = getState().auth.token;
+      if (!token) {
+        reject();
+      } else {
+        resolve(token);
+      }
+    });
+    return promise;
   };
 };
