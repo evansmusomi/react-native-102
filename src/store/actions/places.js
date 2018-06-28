@@ -8,38 +8,49 @@ export const addPlace = (placeName, location, image) => {
       location: location,
       image: ""
     };
+    let authToken;
     dispatch(uiStartLoading());
-    fetch(
-      "https://us-central1-awesomeplaces-1528951686629.cloudfunctions.net/storeImage",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          image: image.base64
-        })
-      }
-    )
-      .then(response => response.json())
-      .then(parsedResponse => {
-        console.log(parsedResponse);
-        placeData.image = parsedResponse.imageUrl;
+    dispatch(authGetToken())
+      .catch(() => {
+        alert("No valid token found!");
+      })
+      .then(token => {
+        authToken = token;
         return fetch(
-          "https://awesomeplaces-1528951686629.firebaseio.com/places.json",
+          "https://us-central1-awesomeplaces-1528951686629.cloudfunctions.net/storeImage",
           {
             method: "POST",
-            body: JSON.stringify(placeData)
+            body: JSON.stringify({
+              image: image.base64
+            }),
+            headers: {
+              Authorization: `Bearer ${authToken}`
+            }
           }
-        );
-      })
-      .then(response => response.json())
-      .then(parsedResponse => {
-        placeData.key = parsedResponse.name;
-        dispatch(setNewPlace(placeData));
-        dispatch(uiStopLoading());
-      })
-      .catch(error => {
-        console.log(error);
-        alert("Something went wrong, please try again!");
-        dispatch(uiStopLoading());
+        )
+          .then(response => response.json())
+          .then(parsedResponse => {
+            console.log(parsedResponse);
+            placeData.image = parsedResponse.imageUrl;
+            return fetch(
+              `https://awesomeplaces-1528951686629.firebaseio.com/places.json?auth=${authToken}`,
+              {
+                method: "POST",
+                body: JSON.stringify(placeData)
+              }
+            );
+          })
+          .then(response => response.json())
+          .then(parsedResponse => {
+            placeData.key = parsedResponse.name;
+            dispatch(setNewPlace(placeData));
+            dispatch(uiStopLoading());
+          })
+          .catch(error => {
+            console.log(error);
+            alert("Something went wrong, please try again!");
+            dispatch(uiStopLoading());
+          });
       });
   };
 };
