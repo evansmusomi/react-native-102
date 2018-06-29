@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 
-import { tryAuth } from "../../store/actions/index";
+import { tryAuth, authAutoSignIn } from "../../store/actions/index";
 import DefaultInput from "../../components/UI/DefaultInput/DefaultInput";
 import HeadingText from "../../components/UI/HeadingText/HeadingText";
 import MainText from "../../components/UI/MainText/MainText";
@@ -58,6 +58,10 @@ class AuthScreen extends Component {
 
   componentWillUnmount() {
     Dimensions.removeEventListener("change", this.updateStyles);
+  }
+
+  componentDidMount() {
+    this.props.onAutoSignIn();
   }
 
   updateInputState = (key, value) => {
@@ -279,7 +283,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode))
+    onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode)),
+    onAutoSignIn: () => dispatch(authAutoSignIn())
   };
 };
 
