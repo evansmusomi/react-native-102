@@ -35,27 +35,30 @@ export const tryAuth = (authData, authMode) => {
           alert("Authentication failed, please try again!");
         } else {
           dispatch(
-            authStoreToken(parsedResponse.idToken, parsedResponse.expiresIn)
+            authStoreToken(
+              parsedResponse.idToken,
+              parsedResponse.expiresIn,
+              parsedResponse.refreshToken
+            )
           );
           startMainTabs();
         }
-        console.log(parsedResponse);
       })
       .catch(error => {
         dispatch(uiStopLoading());
-        console.log(error);
         alert("Authentication failed, please try again!");
       });
   };
 };
 
-export const authStoreToken = (token, expiresIn) => {
+export const authStoreToken = (token, expiresIn, refreshToken) => {
   return dispatch => {
     dispatch(authSetToken(token));
     const now = new Date();
     const expiryDate = now.getTime() + expiresIn * 1000;
     AsyncStorage.setItem("ap:auth:token", token);
     AsyncStorage.setItem("ap:auth:expiryDate", expiryDate.toString());
+    AsyncStorage.setItem("ap:auth:refreshToken", refreshToken);
   };
 };
 
@@ -73,7 +76,7 @@ export const authGetToken = () => {
       if (!token) {
         let fetchedToken;
         AsyncStorage.getItem("ap:auth:token")
-          .catch(error => reject())
+          .catch(() => reject())
           .then(tokenFromStorage => {
             fetchedToken = tokenFromStorage;
             if (!tokenFromStorage) {
@@ -91,16 +94,52 @@ export const authGetToken = () => {
             } else {
               reject();
             }
-          })
-          .catch(() => reject());
+          });
       } else {
         resolve(token);
       }
     });
-    promise.catch(() => {
-      dispatch(authClearStorage());
-    });
-    return promise;
+
+    return promise
+      .catch(() => {
+        return AsyncStorage.getItem("ap:auth:refreshToken")
+          .then(refreshToken => {
+            return fetch(
+              `https://securetoken.googleapis.com/v1/token?key=${
+                Config.FIREBASE_API_KEY
+              }`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `grant_type=refresh_token&refresh_token=${refreshToken}`
+              }
+            );
+          })
+          .then(response => response.json())
+          .then(parsedResponse => {
+            if (parsedResponse.id_token) {
+              dispatch(
+                authStoreToken(
+                  parsedResponse.id_token,
+                  parsedResponse.expires_in,
+                  parsedResponse.refresh_token
+                )
+              );
+              return parsedResponse.id_token;
+            } else {
+              dispatch(authClearStorage());
+            }
+          });
+      })
+      .then(token => {
+        if (!token) {
+          throw new Error();
+        } else {
+          return token;
+        }
+      });
   };
 };
 
