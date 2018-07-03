@@ -4,16 +4,22 @@ import MapView from "react-native-maps";
 import { requestLocationPermission } from "../../utils/helpers";
 
 class PickLocation extends Component {
-  state = {
-    focusedLocation: {
-      latitude: -1.2859911,
-      longitude: 36.8231155,
-      latitudeDelta: 0.0122,
-      longitudeDelta:
-        (Dimensions.get("window").width / Dimensions.get("window").height) *
-        0.0122
-    },
-    locationChosen: false
+  componentWillMount() {
+    this.reset();
+  }
+
+  reset = () => {
+    this.setState({
+      focusedLocation: {
+        latitude: -1.2859911,
+        longitude: 36.8231155,
+        latitudeDelta: 0.0122,
+        longitudeDelta:
+          (Dimensions.get("window").width / Dimensions.get("window").height) *
+          0.0122
+      },
+      locationChosen: false
+    });
   };
 
   pickLocationHandler = event => {
@@ -74,6 +80,7 @@ class PickLocation extends Component {
         <MapView
           style={styles.map}
           initialRegion={this.state.focusedLocation}
+          region={this.state.locationChosen ? this.state.focusedLocation : null}
           onPress={this.pickLocationHandler}
           ref={ref => (this.map = ref)}
         >
