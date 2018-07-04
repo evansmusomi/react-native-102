@@ -1,5 +1,22 @@
-import { SET_PLACES, REMOVE_PLACE, SET_NEW_PLACE } from "./actionTypes";
+import {
+  SET_PLACES,
+  REMOVE_PLACE,
+  PLACE_ADDED,
+  START_ADD_PLACE
+} from "./actionTypes";
 import { uiStartLoading, uiStopLoading, authGetToken } from "./index";
+
+export const startAddPlace = () => {
+  return {
+    type: START_ADD_PLACE
+  };
+};
+
+export const placeAdded = () => {
+  return {
+    type: PLACE_ADDED
+  };
+};
 
 export const addPlace = (placeName, location, image) => {
   return dispatch => {
@@ -43,8 +60,8 @@ export const addPlace = (placeName, location, image) => {
           .then(response => response.json())
           .then(parsedResponse => {
             placeData.key = parsedResponse.name;
-            dispatch(setNewPlace(placeData));
             dispatch(uiStopLoading());
+            dispatch(placeAdded());
           })
           .catch(error => {
             console.log(error);
@@ -89,20 +106,6 @@ export const setPlaces = places => {
   return {
     type: SET_PLACES,
     places: places
-  };
-};
-
-export const setNewPlace = place => {
-  return {
-    type: SET_NEW_PLACE,
-    place: {
-      image: {
-        uri: place.image
-      },
-      location: place.location,
-      name: place.name,
-      key: place.key
-    }
   };
 };
 
