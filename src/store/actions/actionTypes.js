@@ -1,5 +1,7 @@
 export const SET_PLACES = "SET_PLACES";
 export const SET_NEW_PLACE = "SET_NEW_PLACE";
+export const PLACE_ADDED = "PLACE_ADDED";
+export const START_ADD_PLACE = "START_ADD_PLACE";
 export const REMOVE_PLACE = "REMOVE_PLACE";
 export const TRY_AUTH = "TRY_AUTH";
 
