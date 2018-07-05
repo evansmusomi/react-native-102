@@ -63,7 +63,8 @@ exports.storeImage = functions.https.onRequest((request, response) => {
               response.status(201).json({
                 imageUrl: `https://firebasestorage.googleapis.com/v0/b/${
                   bucket.name
-                }/o/${encodeURIComponent(file.name)}?alt=media&token=${uuid}`
+                }/o/${encodeURIComponent(file.name)}?alt=media&token=${uuid}`,
+                imagePath: `places/${uuid}.jpg`
               });
             } else {
               console.log(error);
@@ -78,3 +79,15 @@ exports.storeImage = functions.https.onRequest((request, response) => {
       });
   });
 });
+
+exports.deleteImage = functions.database
+  .ref("/places/{placeId}")
+  .onDelete(event => {
+    console.log(event);
+    const imagePath = event._data.imagePath;
+
+    const bucket = googleCloudStorage.bucket(
+      "awesomeplaces-1528951686629.appspot.com"
+    );
+    return bucket.file(imagePath).delete();
+  });
