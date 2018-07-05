@@ -30,6 +30,7 @@ export const addPlace = (placeName, location, image) => {
     dispatch(authGetToken())
       .catch(() => {
         alert("No valid token found!");
+        dispatch(uiStopLoading());
       })
       .then(token => {
         authToken = token;
@@ -45,7 +46,13 @@ export const addPlace = (placeName, location, image) => {
             }
           }
         )
-          .then(response => response.json())
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error();
+            }
+          })
           .then(parsedResponse => {
             console.log(parsedResponse);
             placeData.image = parsedResponse.imageUrl;
@@ -57,7 +64,13 @@ export const addPlace = (placeName, location, image) => {
               }
             );
           })
-          .then(response => response.json())
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error();
+            }
+          })
           .then(parsedResponse => {
             placeData.key = parsedResponse.name;
             dispatch(uiStopLoading());
@@ -81,7 +94,13 @@ export const getPlaces = () => {
           `https://awesomeplaces-1528951686629.firebaseio.com/places.json?auth=${token}`
         );
       })
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      })
       .then(parsedResponse => {
         const places = [];
         for (let key in parsedResponse) {
@@ -123,7 +142,7 @@ export const deletePlace = key => {
         );
       })
       .then(response => response.json())
-      .then(parsedResponse => {
+      .then(() => {
         console.log("Done");
       })
       .catch(error => {
